@@ -6,6 +6,7 @@ package main
 
 import (
 	"crypto/md5"
+	"flag"
 	"github.com/intel-go/yanff/flow"
 	"github.com/intel-go/yanff/packet"
 	"sync"
@@ -58,9 +59,15 @@ var (
 	DSTPORT_3 uint16 = 333
 
 	testDoneEvent *sync.Cond = nil
+
+	SEND_PORT uint
+	RECV_PORT uint
 )
 
 func main() {
+	flag.UintVar(&SEND_PORT, "SEND_PORT", 0, "port for sender")
+	flag.UintVar(&RECV_PORT, "RECV_PORT", 0, "port for receiver")
+
 	// Init YANFF system at requested number of cores.
 	flow.SystemInit(options)
 
@@ -74,10 +81,10 @@ func main() {
 
 	outputFlow := flow.SetMerger(flow1, flow2, flow3)
 
-	flow.SetSender(outputFlow, 0)
+	flow.SetSender(outputFlow, uint8(SEND_PORT))
 
 	// Create receiving flows and set a checking function for it
-	inputFlow1 := flow.SetReceiver(0)
+	inputFlow1 := flow.SetReceiver(uint8(SEND_PORT))
 	flow.SetHandler(inputFlow1, checkPacketsOn0Port)
 	flow.SetStopper(inputFlow1)
 

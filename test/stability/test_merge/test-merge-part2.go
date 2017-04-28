@@ -5,22 +5,34 @@
 package main
 
 import (
+	"flag"
 	"github.com/intel-go/yanff/flow"
 )
 
 var options = `{"cores": {"Value": 16, "Locked": false}}`
 
+var (
+	RECV_PORT1 uint
+	RECV_PORT2 uint
+	SEND_PORT  uint
+)
+
 // Main function for constructing packet processing graph.
 func main() {
+
+	flag.UintVar(&RECV_PORT1, "RECV_PORT1", 0, "port for 1st receiver")
+	flag.UintVar(&RECV_PORT2, "RECV_PORT2", 1, "port for 2nd receiver")
+	flag.UintVar(&SEND_PORT, "SEND_PORT", 2, "port for sender")
+
 	// Init YANFF system at requested number of cores.
 	flow.SystemInit(options)
 
 	// Receive packets from 0 and 1 ports
-	inputFlow1 := flow.SetReceiver(0)
-	inputFlow2 := flow.SetReceiver(1)
+	inputFlow1 := flow.SetReceiver(uint8(RECV_PORT1))
+	inputFlow2 := flow.SetReceiver(uint8(RECV_PORT2))
 
 	outputFlow := flow.SetMerger(inputFlow1, inputFlow2)
-	flow.SetSender(outputFlow, 2)
+	flow.SetSender(outputFlow, uint8(SEND_PORT))
 
 	// Begin to process packets.
 	flow.SystemStart()

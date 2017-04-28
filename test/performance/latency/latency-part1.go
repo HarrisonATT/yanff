@@ -38,6 +38,9 @@ var (
 
 	PACKET_SIZE    uint64 = 128
 	SERV_DATA_SIZE uint64 = 46 // Ether + IPv4 + UDP + 4
+
+	SEND_PORT uint
+	RECV_PORT uint
 )
 
 var (
@@ -73,6 +76,8 @@ func main() {
 	flag.Uint64Var(&SPEED, "SPEED", SPEED, "speed of generator")
 	flag.Uint64Var(&PASSED_LIMIT, "PASSED_LIMIT", PASSED_LIMIT, "received/sent minimum ratio to pass test")
 	flag.Uint64Var(&PACKET_SIZE, "PACKET_SIZE", PACKET_SIZE, "size of packet")
+	flag.UintVar(&SEND_PORT, "SEND_PORT", 0, "port for sender")
+	flag.UintVar(&RECV_PORT, "RECV_PORT", 1, "port for receiver")
 
 	latencies = make(chan time.Duration)
 	stop = make(chan string)
@@ -90,10 +95,10 @@ func main() {
 
 	// Create packet flow
 	outputFlow := flow.SetGenerator(generatePackets, SPEED)
-	flow.SetSender(outputFlow, 0)
+	flow.SetSender(outputFlow, uint8(SEND_PORT))
 
 	// Create receiving flow and set a checking function for it
-	inputFlow := flow.SetReceiver(1)
+	inputFlow := flow.SetReceiver(uint8(RECV_PORT))
 
 	// Calculate latency only for 1 of SKIP_NUMBER packets.
 	latFlow := flow.SetPartitioner(inputFlow, SKIP_NUMBER, 1)

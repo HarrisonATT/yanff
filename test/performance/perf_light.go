@@ -9,19 +9,30 @@ import "github.com/intel-go/yanff/packet"
 
 import "flag"
 
-var mode uint
-var cores uint
-var options = `{"cores": {"Value": 15, "Locked": false}}`
+var (
+	mode    uint
+	cores   uint
+	options = `{"cores": {"Value": 15, "Locked": false}}`
+
+	RECV_PORT1 uint
+	RECV_PORT2 uint
+	SEND_PORT1 uint
+	SEND_PORT2 uint
+)
 
 func main() {
 	flag.UintVar(&mode, "mode", 0, "Benching mode: 0 - empty, 1 - parsing, 2 - parsing, reading, writing")
+	flag.UintVar(&SEND_PORT1, "SEND_PORT1", 1, "port for 1st sender")
+	flag.UintVar(&SEND_PORT2, "SEND_PORT2", 1, "port for 2nd sender")
+	flag.UintVar(&RECV_PORT1, "RECV_PORT1", 0, "port for 1st receiver")
+	flag.UintVar(&RECV_PORT2, "RECV_PORT2", 0, "port for 2nd receiver")
 
 	// Initialize YANFF library at requested number of cores
 	flow.SystemInit(options)
 
 	// Receive packets from zero port. One queue per receive will be added automatically.
-	firstFlow0 := flow.SetReceiver(0)
-	firstFlow1 := flow.SetReceiver(0)
+	firstFlow0 := flow.SetReceiver(uint8(RECV_PORT1))
+	firstFlow1 := flow.SetReceiver(uint8(RECV_PORT2))
 
 	firstFlow := flow.SetMerger(firstFlow0, firstFlow1)
 
@@ -36,8 +47,8 @@ func main() {
 
 	// Split for two senders and send
 	secondFlow := flow.SetPartitioner(firstFlow, 150, 150)
-	flow.SetSender(firstFlow, 1)
-	flow.SetSender(secondFlow, 1)
+	flow.SetSender(firstFlow, uint8(SEND_PORT1))
+	flow.SetSender(secondFlow, uint8(SEND_PORT2))
 
 	flow.SystemStart()
 }

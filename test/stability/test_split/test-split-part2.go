@@ -5,24 +5,38 @@
 package main
 
 import (
+	"flag"
 	"github.com/intel-go/yanff/flow"
 	"github.com/intel-go/yanff/packet"
 	"github.com/intel-go/yanff/rules"
 )
 
-var L3Rules *rules.L3Rules
-var options = `{"cores": {"Value": 16, "Locked": false}}`
+var (
+	L3Rules    *rules.L3Rules
+	options    = `{"cores": {"Value": 16, "Locked": false}}`
+	RECV_PORT  uint
+	SEND_PORT1 uint
+	SEND_PORT2 uint
+	SEND_PORT3 uint
+)
 
 // Main function for constructing packet processing graph.
 func main() {
+	// If you modify port numbers with cmd line, provide modified test-split.conf accordingly
+	filename := flag.String("FILE", "test-split.conf", "file with split rules in .conf format. If you change default port numbers, please, provide modified rules file too")
+	flag.UintVar(&RECV_PORT, "RECV_PORT", 0, "port for receiver")
+	flag.UintVar(&SEND_PORT1, "SEND_PORT1", 1, "port for 1st sender")
+	flag.UintVar(&SEND_PORT2, "SEND_PORT2", 2, "port for 2nd sender")
+	flag.UintVar(&SEND_PORT3, "SEND_PORT3", 3, "port for 3rd sender")
+
 	// Init YANFF system at requested number of cores.
 	flow.SystemInit(options)
 
 	// Get splitting rules from access control file.
-	L3Rules = rules.GetL3RulesFromORIG("test-split.conf")
+	L3Rules = rules.GetL3RulesFromORIG(*filename)
 
 	// Receive packets from 0 port
-	inputFlow := flow.SetReceiver(0)
+	inputFlow := flow.SetReceiver(uint8(RECV_PORT))
 
 	// Split packet flow based on ACL.
 	flowsNumber := 4
@@ -32,9 +46,9 @@ func main() {
 	flow.SetStopper(outputFlows[0])
 
 	// Send each flow to corresponding port. Send queues will be added automatically.
-	flow.SetSender(outputFlows[1], 1)
-	flow.SetSender(outputFlows[2], 2)
-	flow.SetSender(outputFlows[3], 3)
+	flow.SetSender(outputFlows[1], uint8(SEND_PORT1))
+	flow.SetSender(outputFlows[2], uint8(SEND_PORT2))
+	flow.SetSender(outputFlows[3], uint8(SEND_PORT3))
 
 	// Begin to process packets.
 	flow.SystemStart()
