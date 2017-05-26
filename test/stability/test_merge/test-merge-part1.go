@@ -109,7 +109,7 @@ func main() {
 	}
 }
 
-func generatePacketGroup1(pkt *packet.Packet) {
+func generatePacketGroup1(pkt *packet.Packet, core int) {
 	packet.InitEmptyEtherIPv4UDPPacket(pkt, PAYLOAD_SIZE)
 	if pkt == nil {
 		panic("Failed to create new packet")
@@ -125,7 +125,7 @@ func generatePacketGroup1(pkt *packet.Packet) {
 	atomic.AddUint64(&sentPacketsGroup1, 1)
 }
 
-func generatePacketGroup2(pkt *packet.Packet) {
+func generatePacketGroup2(pkt *packet.Packet, core int) {
 	packet.InitEmptyEtherIPv4UDPPacket(pkt, PAYLOAD_SIZE)
 	if pkt == nil {
 		panic("Failed to create new packet")
@@ -142,7 +142,7 @@ func generatePacketGroup2(pkt *packet.Packet) {
 }
 
 // Count and check packets in received flow
-func checkPackets(pkt *packet.Packet) {
+func checkPackets(pkt *packet.Packet, core int) {
 	recvCount := atomic.AddUint64(&recvPackets, 1)
 
 	offset := pkt.ParseL4Data()

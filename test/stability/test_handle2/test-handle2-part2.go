@@ -34,7 +34,7 @@ func main() {
 	flow.SystemStart()
 }
 
-func L3Handler(pkt *packet.Packet) bool {
+func L3Handler(pkt *packet.Packet, core int) bool {
 	pkt.ParseEtherIPv4UDP()
 	return rules.L3_ACL_permit(pkt, L3Rules)
 }

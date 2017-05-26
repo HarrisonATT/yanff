@@ -31,7 +31,7 @@ type clonePair struct {
 
 // Function types which are used inside flow functions
 type uncloneFlowFunction func(interface{}, uint8)
-type cloneFlowFunction func(interface{}, chan int, chan uint64)
+type cloneFlowFunction func(interface{}, chan int, chan uint64, int)
 type conditionFlowFunction func(interface{}, uint64) bool
 
 type FlowFunction struct {
@@ -144,7 +144,7 @@ func (scheduler *Scheduler) SystemStart() {
 		go func() {
 			low.SetAffinity(uint8(core))
 			ff.cloneNumber = 0
-			ff.cloneFunction(ff.Parameters, nil, ff.report)
+			ff.cloneFunction(ff.Parameters, nil, ff.report, core)
 		}()
 	}
 	// We need this to get a chance to all started goroutines to log their warnings.
@@ -232,7 +232,7 @@ func (scheduler *Scheduler) Schedule(schedTime uint) {
 							// if the last clone will have zero pause as well as original (not cloned) function.
 							ff.clone[j].channel <- ff.cloneNumber
 						}
-						ff.cloneFunction(ff.Parameters, quit, ff.report)
+						ff.cloneFunction(ff.Parameters, quit, ff.report, core)
 					} else {
 						common.LogWarning(common.Debug, "Can't start new clone for", ff.name, ff.identifier)
 					}

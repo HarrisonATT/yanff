@@ -27,7 +27,7 @@ func main() {
 	flow.SystemStart()
 }
 
-func fixPacket(pkt *packet.Packet) {
+func fixPacket(pkt *packet.Packet, core int) {
 	offset := pkt.ParseL4Data()
 	if offset < 0 {
 		println("ParseL4 returned negative value", offset)

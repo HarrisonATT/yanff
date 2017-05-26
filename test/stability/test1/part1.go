@@ -81,7 +81,7 @@ func main() {
 	}
 }
 
-func generatePacket(emptyPacket *packet.Packet) {
+func generatePacket(emptyPacket *packet.Packet, core int) {
 	packet.InitEmptyEtherIPv4UDPPacket(emptyPacket, uint(PACKET_SIZE))
 
 	emptyPacket.Ether.DAddr = [6]uint8{0xde, 0xad, 0xbe, 0xaf, 0xff, 0xfe}
@@ -95,7 +95,7 @@ func generatePacket(emptyPacket *packet.Packet) {
 	atomic.AddUint64(&sentPackets, 1)
 }
 
-func checkPackets(pkt *packet.Packet) {
+func checkPackets(pkt *packet.Packet, core int) {
 	newValue := atomic.AddUint64(&receivedPackets, 1)
 
 	offset := pkt.ParseL4Data()

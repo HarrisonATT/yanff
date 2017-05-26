@@ -108,7 +108,7 @@ func main() {
 }
 
 // Generate packets
-func generatePacket(pkt *packet.Packet) {
+func generatePacket(pkt *packet.Packet, core int) {
 	packet.InitEmptyEtherIPv4UDPPacket(pkt, PAYLOAD_SIZE)
 	if pkt == nil {
 		panic("Failed to create new packet")
@@ -124,7 +124,7 @@ func generatePacket(pkt *packet.Packet) {
 }
 
 // Count and check packets received on 0 port
-func checkPacketsOn0Port(pkt *packet.Packet) {
+func checkPacketsOn0Port(pkt *packet.Packet, core int) {
 	recvCount := atomic.AddUint64(&recvPackets, 1)
 
 	offset := pkt.ParseL4Data()
@@ -154,7 +154,7 @@ func checkPacketsOn0Port(pkt *packet.Packet) {
 }
 
 // Count and check packets received on 1 port
-func checkPacketsOn1Port(pkt *packet.Packet) {
+func checkPacketsOn1Port(pkt *packet.Packet, core int) {
 	recvCount := atomic.AddUint64(&recvPackets, 1)
 
 	offset := pkt.ParseL4Data()

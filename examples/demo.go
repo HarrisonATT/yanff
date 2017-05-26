@@ -44,7 +44,7 @@ func main() {
 	flow.SystemStart()
 }
 
-func L3Separator(currentPacket *packet.Packet) bool {
+func L3Separator(currentPacket *packet.Packet, core int) bool {
 	currentPacket.ParseEtherIPv4()
 	localL2Rules := L2Rules
 	localL3Rules := L3Rules
@@ -52,7 +52,7 @@ func L3Separator(currentPacket *packet.Packet) bool {
 		rules.L3_ACL_permit(currentPacket, localL3Rules)
 }
 
-func heavyFunc(currentPacket *packet.Packet) {
+func heavyFunc(currentPacket *packet.Packet, core int) {
 	for i := uint(0); i < load; i++ {
 	}
 }

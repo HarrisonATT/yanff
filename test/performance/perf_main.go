@@ -38,7 +38,7 @@ func main() {
 	flow.SystemStart()
 }
 
-func heavyFunc(currentPacket *packet.Packet) {
+func heavyFunc(currentPacket *packet.Packet, core int) {
 	currentPacket.ParseEtherIPv4()
 	T := currentPacket.IPv4.DstAddr
 	for j := uint32(0); j < uint32(load); j++ {

@@ -43,7 +43,7 @@ func main() {
 }
 
 // User defined function for splitting packets
-func L3Splitter(currentPacket *packet.Packet) uint {
+func L3Splitter(currentPacket *packet.Packet, core int) uint {
 	// Firstly set up all fields at packet: MAC, IPv4 or IPv6, TCP or UDP.
 	currentPacket.ParseL4()
 

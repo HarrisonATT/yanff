@@ -138,7 +138,7 @@ func main() {
 	}
 }
 
-func generatePackets(pkt *packet.Packet) {
+func generatePackets(pkt *packet.Packet, core int) {
 	packet.InitEmptyEtherIPv4UDPPacket(pkt, uint(payloadSize))
 	if pkt == nil {
 		panic("Failed to create new packet")
@@ -166,7 +166,7 @@ func latenciesLogger(ch <-chan time.Duration, stop <-chan string) {
 }
 
 // Count and check packets in received flow
-func checkPackets(pkt *packet.Packet) {
+func checkPackets(pkt *packet.Packet, core int) {
 	checkCount := atomic.AddUint64(&checkedPackets, 1)
 
 	offset := pkt.ParseL4Data()
@@ -185,7 +185,7 @@ func checkPackets(pkt *packet.Packet) {
 	}
 }
 
-func countPackets(pkt *packet.Packet) {
+func countPackets(pkt *packet.Packet, core int) {
 	atomic.AddUint64(&packetCounter, 1)
 }
 

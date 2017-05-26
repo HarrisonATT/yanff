@@ -62,7 +62,7 @@ func main() {
 	flow.SystemStart()
 }
 
-func L3Splitter(currentPacket *packet.Packet) uint {
+func L3Splitter(currentPacket *packet.Packet, core int) uint {
 	currentPacket.ParseL4()
 	return rules.L3_ACL_port(currentPacket, L3Rules)
 }

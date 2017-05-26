@@ -40,7 +40,7 @@ func main() {
 }
 
 // User defined function for separating packets
-func L3Separator(currentPacket *packet.Packet) bool {
+func L3Separator(currentPacket *packet.Packet, core int) bool {
 	// Firstly set up all fields at packet: MAC, IPv4 or IPv6, TCP or UDP.
 	currentPacket.ParseL4()
 

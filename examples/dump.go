@@ -40,7 +40,7 @@ func main() {
 	flow.SystemStart()
 }
 
-func dumper(currentPacket *packet.Packet) {
+func dumper(currentPacket *packet.Packet, core int) {
 	currentPacket.ParseL4()
 	fmt.Printf("%v", currentPacket.Ether)
 	if currentPacket.IPv4 != nil {
@@ -60,6 +60,6 @@ func dumper(currentPacket *packet.Packet) {
 	fmt.Println("----------------------------------------------------------")
 }
 
-func hexdumper(currentPacket *packet.Packet) {
+func hexdumper(currentPacket *packet.Packet, core int) {
 	fmt.Printf("Raw bytes=%x\n", currentPacket.GetRawPacketBytes())
 }

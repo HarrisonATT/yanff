@@ -42,14 +42,14 @@ func main() {
 	flow.SystemStart()
 }
 
-func heavyFunc0(currentPacket *packet.Packet) {
+func heavyFunc0(currentPacket *packet.Packet, core int) {
 }
 
-func heavyFunc1(currentPacket *packet.Packet) {
+func heavyFunc1(currentPacket *packet.Packet, core int) {
 	currentPacket.ParseEtherIPv4()
 }
 
-func heavyFunc2(currentPacket *packet.Packet) {
+func heavyFunc2(currentPacket *packet.Packet, core int) {
 	currentPacket.ParseEtherIPv4()
 	T := (currentPacket.IPv4.DstAddr)
 	currentPacket.IPv4.SrcAddr = 263 + (T)
